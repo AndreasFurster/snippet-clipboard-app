@@ -1,81 +1,48 @@
 import React from "react";
-import { Stack, TextField, PrimaryButton, DefaultButton } from 'office-ui-fabric-react';
+import { Stack, PrimaryButton } from 'office-ui-fabric-react';
 import { theme } from '../theme'
-import Navigation from '../components/index/Navigation'
-// import { Depths } from '@uifabric/fluent-theme/lib/fluent/FluentDepths';
-
-// import Breadcrumb from "../components/index/Breadcrumb";
-
-console.log(theme);
-
-// const outerStackTokens = {
-//   padding: 10,
-//   childrenGap: 20
-// }
+import Searchbar from '../components/index/Searchbar'
+import SnippetList from '../components/index/SnippetList'
 
 const stackTokens = {
   childrenGap: 10
 }
 
-const sidebarStyles = {
-  root: {
-    minWidth: 150,
-  }
-}
-
 const contentStyles = {
   root: {
-    background: theme.palette.neutralLighter
-  }
-}
-
-const sectionStyles = {
-  root: {
-    boxShadow: theme.effects.elevation4,
-    background: 'white',
-    padding: 20,
     margin: 20
   }
 }
 
-const buttonsStyles = {
+const fullWidthContentStyles = {
   root: {
-    margin: 20
+    background: theme.palette.neutralLighterAlt
   }
 }
 
-export default function () {
-  return (
+const addIcon = { iconName: 'Add' };
 
-    <Stack horizontal tokens={stackTokens}>
-      <Stack.Item grow={1} styles={sidebarStyles}>
-        <Navigation />
-      </Stack.Item>
-      <Stack.Item grow={10} styles={contentStyles}>
-        
-        <Stack>
-          
-          <Stack.Item styles={sectionStyles}>
-            <TextField label="Standard" />
-          </Stack.Item>
-          
-          <Stack.Item styles={sectionStyles}>
-            <TextField label="Field 2" />
-          </Stack.Item>
-
-          <Stack.Item styles={buttonsStyles}>
-            <Stack horizontal tokens={ { childrenGap: 10 } }>
-              <PrimaryButton text="Save" />
-              <DefaultButton text="Cancel" />
-            </Stack>
-          </Stack.Item>
-
-        </Stack>
-
-      </Stack.Item>
-      <Stack.Item grow={1} styles={sidebarStyles}>
-        <strong>On this page</strong>
-      </Stack.Item>
-    </Stack>
-  )
+export default class Component extends React.Component {
+  render() {
+    return (
+      <Stack tokens={stackTokens}>
+        <Stack.Item styles={contentStyles}>
+          <Stack horizontal>
+            <Stack.Item grow>
+              <h1>Snippet Clipboard</h1>
+            </Stack.Item>
+            <Stack.Item align="center">
+              <PrimaryButton iconProps={addIcon} text="Add" onClick={() => this.props.history.push(`/snippets/add`)} />
+            </Stack.Item>
+          </Stack>
+        </Stack.Item>
+        <Stack.Item styles={contentStyles}>
+          <Searchbar/>
+        </Stack.Item>
+        <Stack.Item grow styles={fullWidthContentStyles}>
+          <SnippetList page={this} />
+        </Stack.Item>
+      </Stack>
+    )
+  }
 }

@@ -2,25 +2,27 @@ import React from "react";
 import {
   Switch,
   Route,
+  Redirect
 } from "react-router-dom";
 
-import Home from '../../pages/Home'
-import Docs from '../../pages/Index'
+import Index from '../../pages/Index'
+import Edit from '../../pages/Edit'
 
-export default function() {
-  return (
-    <Switch>
-      <Route path="/index">
-        <Docs />
-      </Route>
-      <Route path="/users">
-        <Users />
-      </Route>
-      <Route path="/">
-        <Home />
-      </Route>
-    </Switch>
-  );
+export default class Component extends React.Component {
+  render(){
+    return (
+      <Switch>
+        <Route exact path="/" component={Index} />
+        <Route exact path="/snippets/:id/edit" component={Edit} />
+        <Route exact path="/snippets">
+          <Redirect to="/" />
+        </Route>
+        <Route>
+          <h1>404</h1>
+        </Route>
+      </Switch>
+    );
+  }
 }
 
 function Users() {

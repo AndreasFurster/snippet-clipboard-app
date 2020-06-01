@@ -1,16 +1,16 @@
 import React from "react";
-import Navigation from './Navigation'
 import Routes from './Routes'
+import { Stack, FontWeights } from 'office-ui-fabric-react';
 
-import { Stack } from 'office-ui-fabric-react';
 
-
-export default function () {
+export default class Component extends React.Component {
   
-  return (
-    <Stack>
-      <Navigation />
-      <Routes />
-    </Stack>
-  )
+  render() {
+    return (
+      <Stack>
+        {/* <Navigation /> */}
+        <Routes />
+      </Stack>
+    )
+  }
 }

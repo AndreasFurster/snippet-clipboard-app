@@ -6,6 +6,8 @@ import { mergeStyles } from 'office-ui-fabric-react';
 import { initializeIcons } from '@uifabric/icons';
 import { Customizations } from 'office-ui-fabric-react';
 import { theme } from './theme'
+import { Provider } from "react-redux";
+import store from "./redux/store";
 
 Customizations.applySettings({ theme })
 initializeIcons();
@@ -22,7 +24,9 @@ mergeStyles({
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Provider store={store}>
+      <App />
+    </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );
