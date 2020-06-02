@@ -1,7 +1,13 @@
 import React from "react";
 import { Stack, PrimaryButton, TextField, DefaultButton } from 'office-ui-fabric-react';
 import { theme } from '../theme'
+import MonacoEditor from 'react-monaco-editor';
 
+const titleStyles = {
+  root: {
+    margin: 20
+  }
+}
 
 const sectionStyles = {
   root: {
@@ -22,18 +28,47 @@ export default class Component extends React.Component {
   constructor(props) {
     super(props)
     this.id = this.props.match.params.id
+    this.state = {
+      code: '// type your code...',
+    }
   }
-  
+
+  editorDidMount(editor, monaco) {
+    console.log('editorDidMount', editor);
+    editor.focus();
+  }
+  onChange(newValue, e) {
+    console.log('onChange', newValue, e);
+  }
+
   render() {
+    const code = this.state.code;
+    const options = {
+      selectOnLineNumbers: true
+    };
+
     return (
       <Stack>
-        
+        <Stack.Item styles={titleStyles}>
+          <h1>Edit snippet</h1>
+        </Stack.Item>
+
         <Stack.Item styles={sectionStyles}>
-          <TextField label="Standard" />
+          <TextField label="Keywords to quickly find a snippet (seperate with a blank line)" multiline autoAdjustHeight/>
         </Stack.Item>
         
         <Stack.Item styles={sectionStyles}>
-          <TextField label="Field 2" />
+          {/* <TextField label="Snippet content" multiline autoAdjustHeight/> */}
+          <MonacoEditor
+            height="600"
+            language="javascript"
+            theme="vs-dark"
+            value={code}
+            options={options}
+            onChange={this.onChange}
+            editorDidMount={this.editorDidMount}
+          />
+                      
         </Stack.Item>
 
         <Stack.Item styles={buttonsStyles}>
