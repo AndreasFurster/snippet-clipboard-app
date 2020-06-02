@@ -1,9 +1,9 @@
-import React from "react";
-import { connect } from "react-redux";
-import { Stack, IconButton } from 'office-ui-fabric-react';
-import { ContextualMenuItemType } from 'office-ui-fabric-react/lib/ContextualMenu';
-import { CLICK_SNIPPET } from "../../redux/actions";
-import { theme } from '../../theme';
+import React from "react"
+import { connect } from "react-redux"
+import { Stack, IconButton } from 'office-ui-fabric-react'
+import { ContextualMenuItemType } from 'office-ui-fabric-react/lib/ContextualMenu'
+import { COPY_SNIPPET } from "../../redux/actions"
+import { theme } from '../../theme'
 
 const snippetStyles = {
   root: {
@@ -105,7 +105,7 @@ class Component extends React.Component {
         <Stack horizontal>
           <Stack.Item grow styles={contentStyles}>
             <div
-              onClick={() => this.props.clickSnippet(this.props.snippet.id)}
+              onClick={() => this.props.copySnippet(this.props.snippet.id)}
               onMouseDown={() => this.setActive(true)}
               onMouseUp={() => this.setActive(false)}
               onMouseEnter={() => this.setHover(true)}
@@ -125,7 +125,7 @@ class Component extends React.Component {
 
 
 const mapDispatchToProps = dispatch => ({
-  clickSnippet: id => dispatch(CLICK_SNIPPET(id))
+  copySnippet: id => dispatch(COPY_SNIPPET(id))
 })
 
 
