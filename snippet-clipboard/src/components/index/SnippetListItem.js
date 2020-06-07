@@ -2,7 +2,7 @@ import React from "react"
 import { connect } from "react-redux"
 import { Stack, IconButton } from 'office-ui-fabric-react'
 import { ContextualMenuItemType } from 'office-ui-fabric-react/lib/ContextualMenu'
-import { editSnippet } from "../../redux/actions"
+import { editSnippet, copySnippet } from "../../redux/actions"
 import { theme } from '../../theme'
 
 const snippetStyles = {
@@ -102,13 +102,13 @@ class Component extends React.Component {
   }
 
   render() {
-    const { snippet } = this.props
+    const { snippet, dispatch } = this.props
     return (
       <Stack.Item styles={this.snippetStyles}>
         <Stack horizontal>
           <Stack.Item grow styles={contentStyles}>
             <div
-              onClick={() => this.props.copySnippet(snippet.id)}
+              onClick={() => dispatch(copySnippet(snippet))}
               onMouseDown={() => this.setActive(true)}
               onMouseUp={() => this.setActive(false)}
               onMouseEnter={() => this.setHover(true)}

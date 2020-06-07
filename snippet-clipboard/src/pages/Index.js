@@ -1,10 +1,9 @@
 import React from "react";
-import { Stack, PrimaryButton } from 'office-ui-fabric-react';
+import { Stack, PrimaryButton, SearchBox } from 'office-ui-fabric-react';
 import { theme } from '../theme'
 import { connect } from "react-redux";
-import Searchbar from '../components/index/Searchbar'
 import SnippetList from '../components/index/SnippetList'
-import { fetchSnippets } from "../redux/actions";
+import { fetchSnippets, addSnippet } from "../redux/actions";
 
 const stackTokens = {
   childrenGap: 10
@@ -25,13 +24,28 @@ const fullWidthContentStyles = {
 const addIcon = { iconName: 'Add' };
 
 class Component extends React.Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      filteredSnippets: null
+    }
+  }
+
   componentDidMount() {
     const { dispatch } = this.props
     dispatch(fetchSnippets())
   }
 
+  filterSnippets(query) {
+    this.setState({
+      filteredSnippets: !this.props.snippets ? null : this.props.snippets.filter(s => s.title.includes(query))
+    })
+  }
+
   render() {
-    const { isPending, error, snippets } = this.props
+    const { isPending, error, snippets, dispatch } = this.props
+    const filteredSnippets = this.state.filteredSnippets ?? snippets
 
     return (
       <Stack tokens={stackTokens}>
@@ -41,15 +55,15 @@ class Component extends React.Component {
               <h1>Snippet Clipboard</h1>
             </Stack.Item>
             <Stack.Item align="center">
-              <PrimaryButton iconProps={addIcon} text="Add" onClick={() => this.props.history.push(`/snippets/add`)} />
+              <PrimaryButton iconProps={addIcon} text="Add" onClick={() => dispatch(addSnippet())} />
             </Stack.Item>
           </Stack>
         </Stack.Item>
         <Stack.Item styles={contentStyles}>
-          <Searchbar/>
+          <SearchBox placeholder="Search" onChange={(e) => this.filterSnippets(e.currentTarget.value)} />
         </Stack.Item>
         <Stack.Item grow styles={fullWidthContentStyles}>
-          { isPending ? <h2>Loading...</h2> : <SnippetList snippets={snippets} /> }
+          { isPending ? <h2>Loading...</h2> : <SnippetList snippets={filteredSnippets} /> }
         </Stack.Item>
       </Stack>
     )
