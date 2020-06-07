@@ -1,14 +1,14 @@
 import React from "react";
-import { BrowserRouter as Router } from "react-router-dom";
-import Base from './components/layout/Base'
-
+import Routes from './Routes'
+import { Stack } from 'office-ui-fabric-react';
 
 export default class Component extends React.Component {
   render() {
     return (
-      <Router>
-        <Base/>
-      </Router>
-    );
+      <Stack>
+        {/* <Navigation /> */}
+        <Routes />
+      </Stack>
+    )
   }
 }

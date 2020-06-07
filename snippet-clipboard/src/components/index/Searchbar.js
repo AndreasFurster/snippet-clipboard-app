@@ -4,10 +4,6 @@ import { connect } from "react-redux";
 import { SEARCH_SNIPPETS } from "../../redux/actions";
 
 class Component extends React.Component {
-  constructor(props){
-    super(props)
-  }
-  
   render() {
     return (
       <SearchBox placeholder="Search" 

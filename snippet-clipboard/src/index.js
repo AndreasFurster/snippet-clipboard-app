@@ -7,7 +7,8 @@ import { initializeIcons } from '@uifabric/icons';
 import { Customizations } from 'office-ui-fabric-react';
 import { theme } from './theme'
 import { Provider } from "react-redux";
-import store from "./redux/store";
+import { ConnectedRouter } from 'connected-react-router'
+import store, { history } from "./redux/store";
 
 Customizations.applySettings({ theme })
 initializeIcons();
@@ -23,11 +24,14 @@ mergeStyles({
 });
 
 ReactDOM.render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <Provider store={store}>
-      <App />
+      <ConnectedRouter history={history}>
+        <App />
+      </ConnectedRouter>
     </Provider>
-  </React.StrictMode>,
+  // </React.StrictMode>,
+  ,
   document.getElementById('root')
 );
 

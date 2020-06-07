@@ -2,7 +2,7 @@ import React from "react"
 import { connect } from "react-redux"
 import { Stack, IconButton } from 'office-ui-fabric-react'
 import { ContextualMenuItemType } from 'office-ui-fabric-react/lib/ContextualMenu'
-import { COPY_SNIPPET } from "../../redux/actions"
+import { editSnippet } from "../../redux/actions"
 import { theme } from '../../theme'
 
 const snippetStyles = {
@@ -36,12 +36,12 @@ const contentStyles = {
 
 const menuIcon = { iconName: 'More', color: 'blue' };
 
-const buildMenuProps = (history, id) => ({
+const buildMenuProps = (dispatch, id) => ({
   items: [
     {
       key: 'edit',
       text: 'Edit',
-      onClick: () => history.push(`/snippets/${id}/edit`),
+      onClick: () => dispatch(editSnippet(id)),
       iconProps: {
         iconName: 'Edit',
       }
@@ -73,10 +73,12 @@ const buildMenuProps = (history, id) => ({
 class Component extends React.Component {
   constructor(props) {
     super(props)
-    this.snippetStyles = snippetStyles
-    this.menuProps = buildMenuProps(this.props.page.props.history, this.props.snippet.id)
-  }
+    const { dispatch } = this.props
 
+    this.snippetStyles = snippetStyles
+    this.menuProps = buildMenuProps(dispatch, this.props.snippet.id)
+  }
+  
   setHover(hover) {
     if (hover) {
       this.snippetStyles = { root: { ...snippetStyles.root, ...snippetHoverStyles.root } }
@@ -100,18 +102,19 @@ class Component extends React.Component {
   }
 
   render() {
+    const { snippet } = this.props
     return (
       <Stack.Item styles={this.snippetStyles}>
         <Stack horizontal>
           <Stack.Item grow styles={contentStyles}>
             <div
-              onClick={() => this.props.copySnippet(this.props.snippet.id)}
+              onClick={() => this.props.copySnippet(snippet.id)}
               onMouseDown={() => this.setActive(true)}
               onMouseUp={() => this.setActive(false)}
               onMouseEnter={() => this.setHover(true)}
               onMouseLeave={() => this.setHover(false)} >
 
-              {this.props.snippet.content}
+              {snippet.title}
             </div>
           </Stack.Item>
           <Stack.Item>
@@ -123,10 +126,4 @@ class Component extends React.Component {
   }
 }
 
-
-const mapDispatchToProps = dispatch => ({
-  copySnippet: id => dispatch(COPY_SNIPPET(id))
-})
-
-
-export default connect(null, mapDispatchToProps)(Component)
+export default connect(null, null)(Component)

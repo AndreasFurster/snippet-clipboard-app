@@ -1,8 +1,10 @@
 import React from "react";
 import { Stack, PrimaryButton } from 'office-ui-fabric-react';
 import { theme } from '../theme'
+import { connect } from "react-redux";
 import Searchbar from '../components/index/Searchbar'
 import SnippetList from '../components/index/SnippetList'
+import { fetchSnippets } from "../redux/actions";
 
 const stackTokens = {
   childrenGap: 10
@@ -22,8 +24,15 @@ const fullWidthContentStyles = {
 
 const addIcon = { iconName: 'Add' };
 
-export default class Component extends React.Component {
+class Component extends React.Component {
+  componentDidMount() {
+    const { dispatch } = this.props
+    dispatch(fetchSnippets())
+  }
+
   render() {
+    const { isPending, error, snippets } = this.props
+
     return (
       <Stack tokens={stackTokens}>
         <Stack.Item styles={contentStyles}>
@@ -40,9 +49,17 @@ export default class Component extends React.Component {
           <Searchbar/>
         </Stack.Item>
         <Stack.Item grow styles={fullWidthContentStyles}>
-          <SnippetList page={this} />
+          { isPending ? <h2>Loading...</h2> : <SnippetList snippets={snippets} /> }
         </Stack.Item>
       </Stack>
     )
   }
 }
+
+const mapStateToProps = (state) => ({ 
+  snippets: state.snippets.allItems,
+  isPending: state.snippets.isPending,
+  error: state.snippets.error,
+})
+
+export default connect(mapStateToProps, null)(Component)

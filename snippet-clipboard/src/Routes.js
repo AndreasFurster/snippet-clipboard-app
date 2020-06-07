@@ -5,8 +5,8 @@ import {
   Redirect
 } from "react-router-dom";
 
-import Index from '../../pages/Index'
-import Edit from '../../pages/Edit'
+import Index from './pages/Index'
+import Edit from './pages/Edit'
 
 export default class Component extends React.Component {
   render(){
@@ -23,8 +23,4 @@ export default class Component extends React.Component {
       </Switch>
     );
   }
-}
-
-function Users() {
-  return <h2>Users</h2>;
 }
