@@ -3,6 +3,8 @@ import { Stack, PrimaryButton, TextField, DefaultButton, Dropdown } from 'office
 import { theme } from '../theme'
 import MonacoEditor from 'react-monaco-editor'
 import { connect } from "react-redux"
+import { bindActionCreators } from 'redux'
+import { fetchSnippets} from '../redux/middleware/api'
 import { UPDATE_SNIPPET, EDIT_SNIPPET_BY_ID } from "../redux/actions"
 
 const languages = ['abap', 'apex', 'azcli', 'bat', 'cameligo', 'clojure', 'coffee', 'cpp', 'csharp', 'csp', 'css', 'dockerfile', 'fsharp', 'go', 'graphql', 'handlebars', 'html', 'ini', 'java', 'javascript', 'json', 'kotlin', 'less', 'lua', 'markdown', 'mips', 'msdax', 'mysql', 'objective-c', 'pascal', 'pascaligo', 'perl', 'pgsql', 'php', 'postiats', 'powerquery', 'powershell', 'pug', 'python', 'r', 'razor', 'redis', 'redshift', 'restructuredtext', 'ruby', 'rust', 'sb', 'scheme', 'scss', 'shell', 'solidity', 'sophia', 'sql', 'st', 'swift', 'tcl', 'twig', 'typescript', 'vb', 'xml', 'yaml']
@@ -40,12 +42,14 @@ class Component extends React.Component {
   }
   
   componentWillMount() {
-    const {fetchProducts} = this.props;
-    fetchProducts();
+    const {fetchSnippets} = this.props;
+    let func = fetchSnippets();
+    console.log(func);
+    
 }
 
   componentDidMount() {
-    this.props.editSnippetById(this.id)
+    // this.props.editSnippetById(this.id)
  }
 
  componentDidUpdate() {
@@ -133,10 +137,8 @@ function mapStateToProps(state) {
   }
 }
 
-const mapDispatchToProps = dispatch => ({
-  editSnippetById: id => dispatch(EDIT_SNIPPET_BY_ID(id)),
-  updateSnippet: snippet => dispatch(UPDATE_SNIPPET(snippet)),
-  fetchSnippets: snippet => dispatch(UPDATE_SNIPPET(snippet)),
-})
+const mapDispatchToProps = dispatch => bindActionCreators({
+  fetchSnippets: snippet => fetchSnippets
+}, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Component)
