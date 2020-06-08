@@ -68,7 +68,7 @@ class Component extends React.Component {
   }
 
   render() {
-    const { isPending, error, editingSnippet, history } = this.props
+    const { isPending, error, editingSnippet } = this.props
     
     return (
       <Stack>

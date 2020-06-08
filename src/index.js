@@ -13,6 +13,8 @@ import store, { history } from "./redux/store";
 Customizations.applySettings({ theme })
 initializeIcons();
 
+console.log(process.env.REACT_APP_API_HOST);
+
 mergeStyles({
   selectors: {
     ':global(body), :global(html), :global(#root)': {
