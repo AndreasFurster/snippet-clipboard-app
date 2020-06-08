@@ -37,6 +37,11 @@ class Component extends React.Component {
     super(props)
 
     this.id = this.props.match.params.id
+    this.state = {
+      id: this.id,
+      content: null,
+      language: null
+    }
   }
 
   componentDidMount() {
@@ -44,20 +49,32 @@ class Component extends React.Component {
     dispatch(fetchSnippet(this.id))
   }
 
+  static getDerivedStateFromProps(nextProps, prevState) {
+    // Don't change anything if ID is not changed
+    if(!nextProps.editingSnippet || nextProps.editingSnippet.content === prevState.content) return null;
+
+    // Update state to new editingSnippet
+    return { 
+      id: nextProps.editingSnippet.id,
+      content: nextProps.editingSnippet.content,
+      language: nextProps.editingSnippet.language,
+    }
+  }
+
   editorDidMount(editor, monaco) {
     editor.focus();
   }
 
   onLanguageChange(value) {
-    this.language = value
+    this.setState({ language: value })
     this.forceUpdate()
   }
 
   saveEdit() {
     const snippet = {
-      id: this.id,
-      content: this.code,
-      language: this.language
+      id: this.state.id, 
+      content: this.state.content,
+      language: this.state.language
     }
 
     this.props.dispatch(saveEdit(snippet))
@@ -68,7 +85,8 @@ class Component extends React.Component {
   }
 
   render() {
-    const { isPending, error, editingSnippet } = this.props
+    const { isPending, error } = this.props
+    const { id, content, language } = this.state
     
     return (
       <Stack>
@@ -86,8 +104,8 @@ class Component extends React.Component {
               <Dropdown placeholder="Language"
                 label="Select a language"
                 styles={dropdownStyles}
-                defaultSelectedKey={this.language}
-                onChange={(e, val) => this.onLanguageChange(val.key)}
+                defaultSelectedKey={language}
+                onChange={(e, val) => { this.setState({ language: val.key }); console.log(val.key) }}
                 options={languages.map(lang => ({ key: lang, text: lang}))}
               />
             </Stack.Item>
@@ -96,11 +114,11 @@ class Component extends React.Component {
               <p style={{ fontWeight: 600 }}>Snippet</p>
               <MonacoEditor
                 height="600"
-                language={editingSnippet.language}
+                language={language}
                 theme="vs-dark"
-                value={this.code}
+                defaultValue={content}
                 options={{ selectOnLineNumbers: true }}
-                onChange={(value, e) => editingSnippet.content = value}
+                onChange={(value, e) => this.setState({ content: value })}
                 editorDidMount={this.editorDidMount} />
             </Stack.Item>
 

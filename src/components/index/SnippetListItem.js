@@ -114,7 +114,7 @@ class Component extends React.Component {
               onMouseEnter={() => this.setHover(true)}
               onMouseLeave={() => this.setHover(false)} >
 
-              {snippet.title}
+              {snippet.preview}
             </div>
           </Stack.Item>
           <Stack.Item>

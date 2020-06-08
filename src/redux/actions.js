@@ -1,6 +1,7 @@
 import { createAction } from "@reduxjs/toolkit";
 import { push } from 'connected-react-router'
 import copy from 'copy-to-clipboard';
+import { getSnippetsForIndex, getSnippetForEdit } from "./queries/snippets";
 
 const axios = require('axios');
 
@@ -10,7 +11,7 @@ export const SEARCH_SNIPPETS = createAction('SEARCH_SNIPPETS');
 export const fetchSnippets = () => dispatch => {
   dispatch({
     'type': 'FETCH_SNIPPETS', 
-    payload: axios.get('https://jsonplaceholder.typicode.com/posts')
+    payload: getSnippetsForIndex()
   })
 }
 
@@ -24,13 +25,14 @@ export const editSnippet = id => dispatch => {
 }
 
 export const copySnippet = snippet => dispatch => {
-  copy(snippet.title)
+  // TODO: Request & copy content instead of preview
+  copy(snippet.preview)
 }
 
 export const fetchSnippet = id => dispatch => {
   dispatch({
     'type': 'FETCH_SNIPPET',
-    payload: axios.get(`https://jsonplaceholder.typicode.com/posts/${id}`)
+    payload: getSnippetForEdit(id)
   })
 }
 

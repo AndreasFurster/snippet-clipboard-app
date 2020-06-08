@@ -23,7 +23,7 @@ const fetchSnippetsPending = (state, action) => ({
 const fetchSnippetsFulfilled = (state, action) => ({
   ...state,
   isPending: false,
-  allItems: action.payload.data
+  allItems: action.payload.data.snippets
 })
 
 const fetchSnippetsRejected = (state, action) => ({
@@ -49,7 +49,7 @@ const fetchSnippetPending = (state, action) => ({
 
 const fetchSnippetFulfilled = (state, action) => ({
   ...state,
-  selectedItem: action.payload.data,
+  selectedItem: action.payload.data.singleSnippet,
   isPending: false,
 })
 
