@@ -4,6 +4,8 @@
 
 Snippet Clipboard is an application to store your frequently used text- or code snippets.
 
+It uses the [Snippet Clipboard API](https://github.com/AndreasFurster/snippet-clipboard-api) (GraphQL)
+
 ## Available Scripts
 
 In the project directory, you can run:
