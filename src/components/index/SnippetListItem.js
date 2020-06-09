@@ -78,6 +78,17 @@ class Component extends React.Component {
     this.snippetStyles = snippetStyles
     this.menuProps = buildMenuProps(dispatch, this.props.snippet.id)
   }
+
+  openMenu(e) {
+    e.preventDefault()
+    
+    // Manually click the menu button, since there is no prop to control the open state
+    e.currentTarget
+      .parentElement
+      .parentElement
+      .getElementsByClassName('menu-button')[0]
+      .click()
+  }
   
   setHover(hover) {
     if (hover) {
@@ -109,6 +120,7 @@ class Component extends React.Component {
           <Stack.Item grow styles={contentStyles}>
             <div
               onClick={() => dispatch(copySnippet(snippet))}
+              onContextMenu={this.openMenu}
               onMouseDown={() => this.setActive(true)}
               onMouseUp={() => this.setActive(false)}
               onMouseEnter={() => this.setHover(true)}
@@ -118,7 +130,7 @@ class Component extends React.Component {
             </div>
           </Stack.Item>
           <Stack.Item>
-            <IconButton menuIconProps={menuIcon} title="menu" ariaLabel="menu" menuProps={this.menuProps} />
+            <IconButton className="menu-button" menuIconProps={menuIcon} title="menu" ariaLabel="menu" menuProps={this.menuProps}/>
           </Stack.Item>
         </Stack>
       </Stack.Item>
