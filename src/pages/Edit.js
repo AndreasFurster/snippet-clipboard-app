@@ -1,5 +1,5 @@
 import React from "react";
-import { Stack, PrimaryButton, TextField, DefaultButton, Dropdown } from 'office-ui-fabric-react';
+import { Stack, PrimaryButton, TextField, DefaultButton, Dropdown, ChoiceGroup } from 'office-ui-fabric-react';
 import { theme } from '../theme'
 import MonacoEditor from 'react-monaco-editor'
 import { connect } from "react-redux"
@@ -32,6 +32,12 @@ const dropdownStyles = {
   dropdown: { width: 300 }
 }
 
+const snippetTypeOptions = [
+  { key: 'text', text: 'Text', iconProps: { iconName: 'InsertTextBox' } },
+  { key: 'code', text: 'Code', iconProps: { iconName: 'Code' } },
+  { key: 'image', text: 'Image', iconProps: { iconName: 'Photo2' }, disabled: true },
+];
+
 class Component extends React.Component {
   constructor(props) {
     super(props)
@@ -39,6 +45,7 @@ class Component extends React.Component {
     this.id = this.props.match.params.id
     this.state = {
       id: this.id,
+      type: null,
       content: null,
       language: null
     }
@@ -51,10 +58,10 @@ class Component extends React.Component {
 
   static getDerivedStateFromProps(nextProps, prevState) {
     // Don't change anything if ID is not changed
-    if(!nextProps.editingSnippet || nextProps.editingSnippet.content === prevState.content) return null;
+    if (!nextProps.editingSnippet || nextProps.editingSnippet.content === prevState.content) return null;
 
     // Update state to new editingSnippet
-    return { 
+    return {
       id: nextProps.editingSnippet.id,
       content: nextProps.editingSnippet.content,
       language: nextProps.editingSnippet.language,
@@ -71,11 +78,11 @@ class Component extends React.Component {
   }
 
   saveEdit() {
-    const snippet = {
-      id: this.state.id, 
-      content: this.state.content,
-      language: this.state.language
-    }
+    // Extract from state
+    const { id, type, content, language } = this.state
+
+    // Create object with same keys
+    const snippet = { id, type, content, language }
 
     this.props.dispatch(saveEdit(snippet))
   }
@@ -84,51 +91,89 @@ class Component extends React.Component {
     this.props.dispatch(cancelEdit())
   }
 
+  getTypeSpecificComponents() {
+    const { type, content, language } = this.state
+
+    switch (type) {
+      case 'text':
+        return <>
+          <Stack.Item styles={sectionStyles}>
+            <TextField label="Content" multiline autoAdjustHeight required />
+          </Stack.Item>
+        </>
+
+      case 'code':
+        return <>
+          <Stack.Item styles={sectionStyles}>
+            <Dropdown placeholder="Language"
+              label="Select a language"
+              styles={dropdownStyles}
+              defaultSelectedKey={language}
+              onChange={(e, val) => console.log({ language: val.key }) }
+              options={languages.map(lang => ({ key: lang, text: lang }))}
+            />
+          </Stack.Item>
+
+          <Stack.Item styles={sectionStyles}>
+            <p style={{ fontWeight: 600 }}>Snippet</p>
+            <MonacoEditor
+              height="600"
+              language={language}
+              theme="vs-dark"
+              defaultValue={content}
+              options={{ selectOnLineNumbers: true }}
+              onChange={(value, e) => this.setState({ content: value })}
+              editorDidMount={this.editorDidMount} 
+              required />
+          </Stack.Item>
+        </>
+
+      case 'image':
+        return <></>
+    
+      default:
+        return <></>
+    }
+  }
+
   render() {
     const { isPending, error } = this.props
-    const { id, content, language } = this.state
-    
+    const { type } = this.state
+
     return (
       <Stack>
         <Stack.Item styles={titleStyles}>
           <h1>Edit snippet</h1>
         </Stack.Item>
 
-        { isPending ? <Stack.Item styles={sectionStyles}><h2>Loading...</h2></Stack.Item> :
-          <> 
+        {isPending ? <Stack.Item styles={sectionStyles}><h2>Loading...</h2></Stack.Item> :
+          <>
             <Stack.Item styles={sectionStyles}>
-              <TextField label="Keywords to quickly find a snippet (seperate with a blank line)" multiline autoAdjustHeight/>
-            </Stack.Item> 
-
-            <Stack.Item styles={sectionStyles}>
-              <Dropdown placeholder="Language"
-                label="Select a language"
-                styles={dropdownStyles}
-                defaultSelectedKey={language}
-                onChange={(e, val) => { this.setState({ language: val.key }); console.log(val.key) }}
-                options={languages.map(lang => ({ key: lang, text: lang}))}
-              />
+              <TextField label="Name" required />
             </Stack.Item>
 
             <Stack.Item styles={sectionStyles}>
-              <p style={{ fontWeight: 600 }}>Snippet</p>
-              <MonacoEditor
-                height="600"
-                language={language}
-                theme="vs-dark"
-                defaultValue={content}
-                options={{ selectOnLineNumbers: true }}
-                onChange={(value, e) => this.setState({ content: value })}
-                editorDidMount={this.editorDidMount} />
+              <TextField label="Keywords to quickly find a snippet (seperate with a blank line)" multiline autoAdjustHeight />
             </Stack.Item>
+
+            <Stack.Item styles={sectionStyles}>
+              <ChoiceGroup 
+                label="Type" 
+                value={type} 
+                onChange={(e, val) => this.setState({ type: val.key })}
+                options={snippetTypeOptions} 
+                required />
+            </Stack.Item>
+
+            {this.getTypeSpecificComponents()}
 
             <Stack.Item styles={buttonsStyles}>
-              <Stack horizontal tokens={ { childrenGap: 10 } }>
+              <Stack horizontal tokens={{ childrenGap: 10 }}>
                 <PrimaryButton text="Save" onClick={() => this.saveEdit()} />
                 <DefaultButton text="Cancel" onClick={() => this.cancelEdit()} />
               </Stack>
-            </Stack.Item> 
-          </> 
+            </Stack.Item>
+          </>
         }
 
       </Stack>
