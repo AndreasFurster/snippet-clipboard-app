@@ -1,11 +1,7 @@
 import { gql } from "apollo-boost";
-import ApolloClient from 'apollo-boost';
+import { client } from './client'
 
-const client = new ApolloClient({
-  uri: process.env.REACT_APP_API_HOST,
-});
-
-export const getSnippetsForIndex = () => 
+export const querySnippetsForIndex = () => 
   client.query({
       query: gql`
         {
@@ -16,7 +12,7 @@ export const getSnippetsForIndex = () =>
       `
     })
 
-export const getSnippetForEdit = (id) => 
+export const querySnippetForEdit = (id) => 
   client.query({
       query: gql`
         {
