@@ -24,3 +24,8 @@ Launches the test runner in the interactive watch mode.<br />
 
 
 _This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app)._
+
+## Testing
+
+ - [testquality.com project](https://andreasfurster.testquality.com/project/10569)
+ - [testquality.com Acceptance Tests](https://andreasfurster.testquality.com/project/10569/plan/18055/test/243229)
