@@ -34,7 +34,7 @@ const dropdownStyles = {
 
 const snippetTypeOptions = [
   { key: 'text', text: 'Text', iconProps: { iconName: 'InsertTextBox' } },
-  { key: 'code', text: 'Code', iconProps: { iconName: 'Code' } },
+  { key: 'code', text: 'Code', iconProps: { iconName: 'Code' }, disabled: true },
   { key: 'image', text: 'Image', iconProps: { iconName: 'Photo2' }, disabled: true },
 ];
 
@@ -44,10 +44,14 @@ class Component extends React.Component {
 
     this.id = this.props.match.params.id
     this.state = {
+      error: false,
+      error_messages: [],
       id: this.id,
+      name: null,
       type: null,
+      keywords: null,
       content: null,
-      language: null
+      language: null,
     }
   }
 
@@ -59,13 +63,20 @@ class Component extends React.Component {
   static getDerivedStateFromProps(nextProps, prevState) {
     // Don't change anything if ID is not changed
     if (!nextProps.editingSnippet || nextProps.editingSnippet.content === prevState.content) return null;
-
+    
     // Update state to new editingSnippet
     return {
-      id: nextProps.editingSnippet.id,
-      content: nextProps.editingSnippet.content,
-      language: nextProps.editingSnippet.language,
+      ...nextProps.editingSnippet,
+      textContent: nextProps.editingSnippet.content
     }
+  }
+
+  validateRequiredField(name, value) {
+    if(!value) {
+      return { error: true, error_message: `The field ${name} is required.` }
+    }
+
+    return { error: false }
   }
 
   editorDidMount(editor, monaco) {
@@ -79,12 +90,22 @@ class Component extends React.Component {
 
   saveEdit() {
     // Extract from state
-    const { id, type, content, language } = this.state
+    const { id, name, type, keywords, language, textContent } = this.state
 
-    // Create object with same keys
-    const snippet = { id, type, content, language }
+    const validateName = this.validateRequiredField('name', name)
+    const validateTextContent = this.validateRequiredField('textContent', textContent)
 
-    this.props.dispatch(saveEdit(snippet))
+    const error = validateName.error || validateTextContent.error
+    
+    if(error) {
+      this.setState({ error: true, error_messages: {'name': validateName.error_message, 'content': validateTextContent.error_message }})
+    }
+    else {
+      // Create object with same keys
+      const snippet = { id, name, type, keywords, language, content: textContent }
+
+      this.props.dispatch(saveEdit(snippet))
+    }
   }
 
   cancelEdit() {
@@ -92,13 +113,20 @@ class Component extends React.Component {
   }
 
   getTypeSpecificComponents() {
-    const { type, content, language } = this.state
+    const { type, content, language, error_messages } = this.state
 
     switch (type) {
       case 'text':
         return <>
           <Stack.Item styles={sectionStyles}>
-            <TextField label="Content" multiline autoAdjustHeight required />
+            <TextField 
+              label="Content" 
+              multiline 
+              autoAdjustHeight 
+              onChange={(e, value) => this.setState({ textContent: value })}
+              required
+              defaultValue={content}
+              errorMessage={error_messages['content']} />
           </Stack.Item>
         </>
 
@@ -109,6 +137,7 @@ class Component extends React.Component {
               label="Select a language"
               styles={dropdownStyles}
               defaultSelectedKey={language}
+              errorMessage={error_messages['language']}
               onChange={(e, val) => console.log({ language: val.key }) }
               options={languages.map(lang => ({ key: lang, text: lang }))}
             />
@@ -137,8 +166,11 @@ class Component extends React.Component {
   }
 
   render() {
-    const { isPending, error } = this.props
-    const { type } = this.state
+    const { isPending } = this.props
+    const { type, name, error_messages, content, keywords } = this.state
+    
+    console.log(content);
+    
 
     return (
       <Stack>
@@ -149,17 +181,30 @@ class Component extends React.Component {
         {isPending ? <Stack.Item styles={sectionStyles}><h2>Loading...</h2></Stack.Item> :
           <>
             <Stack.Item styles={sectionStyles}>
-              <TextField label="Name" required />
+              <TextField 
+                label="Name" 
+                defaultValue={name} 
+                errorMessage={error_messages['name']}
+                onChange={(e, val) => this.setState({ name: val })} 
+                required />
             </Stack.Item>
 
             <Stack.Item styles={sectionStyles}>
-              <TextField label="Keywords to quickly find a snippet (seperate with a blank line)" multiline autoAdjustHeight />
+              <TextField 
+              label="Keywords (for quick search)" 
+              multiline
+              defaultValue={keywords}
+              errorMessage={error_messages['keywords']}
+              onChange={(e, val) => this.setState({ keywords: val })} 
+              autoAdjustHeight />
             </Stack.Item>
 
             <Stack.Item styles={sectionStyles}>
               <ChoiceGroup 
                 label="Type" 
-                value={type} 
+                value={type}
+                errorMessage={error_messages['type']}
+                defaultSelectedKey={type}
                 onChange={(e, val) => this.setState({ type: val.key })}
                 options={snippetTypeOptions} 
                 required />

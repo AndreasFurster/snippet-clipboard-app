@@ -39,12 +39,18 @@ class Component extends React.Component {
 
   filterSnippets(query) {
     this.setState({
-      filteredSnippets: !this.props.snippets ? null : this.props.snippets.filter(s => s.title.includes(query))
+      filteredSnippets: !this.props.snippets ? null : this.props.snippets.filter(s => {
+        if(s.name && s.name.includes(query)) return true;
+        if(s.preview && s.preview.includes(query)) return true;
+        if(s.keywords && s.keywords.includes(query)) return true;
+
+        return false
+      })
     })
   }
 
   render() {
-    const { isPending, error, snippets, dispatch } = this.props
+    const { isPending, snippets, dispatch } = this.props
     const filteredSnippets = this.state.filteredSnippets ?? snippets
 
     return (
@@ -63,7 +69,7 @@ class Component extends React.Component {
           <SearchBox placeholder="Search" onChange={(e) => this.filterSnippets(e.currentTarget.value)} />
         </Stack.Item>
         <Stack.Item grow styles={fullWidthContentStyles}>
-          { isPending ? <h2>Loading...</h2> : <SnippetList snippets={filteredSnippets} /> }
+          { isPending ? <h2 style={ { marginLeft: 15 } }>Loading...</h2> : <SnippetList snippets={filteredSnippets} /> }
         </Stack.Item>
       </Stack>
     )

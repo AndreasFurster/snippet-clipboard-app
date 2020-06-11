@@ -1,5 +1,6 @@
-import ApolloClient from 'apollo-boost';
+import { GraphQLClient } from 'graphql-request'
 
-export const client = new ApolloClient({
-  uri: process.env.REACT_APP_API_HOST,
-});
+export const client = new GraphQLClient(
+  process.env.REACT_APP_API_HOST,
+  { }
+);

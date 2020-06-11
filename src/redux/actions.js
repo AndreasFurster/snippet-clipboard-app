@@ -2,9 +2,7 @@ import { createAction } from "@reduxjs/toolkit";
 import { push } from 'connected-react-router'
 import copy from 'copy-to-clipboard';
 import { querySnippetsForIndex, querySnippetForEdit } from "./graphql/queries";
-import { updateSnippetMutation } from "./graphql/mutations";
-
-const axios = require('axios');
+import { updateSnippetMutation, createSnippetMutation, deleteSnippetMutation } from "./graphql/mutations";
 
 export const SEARCH_SNIPPETS = createAction('SEARCH_SNIPPETS');
 
@@ -17,7 +15,10 @@ export const fetchSnippets = () => dispatch => {
 }
 
 export const addSnippet = () => dispatch => {
-  dispatch(push(`/snippets/new`))
+  dispatch({
+    'type': 'ADD_SNIPPET',
+    payload: createSnippetMutation()
+  })
 }
 
 export const editSnippet = id => dispatch => {
@@ -37,13 +38,19 @@ export const fetchSnippet = id => dispatch => {
   })
 }
 
+export const deleteSnippet = id => dispatch => {
+  dispatch({
+    'type': 'DELETE_SNIPPET',
+    payload: deleteSnippetMutation(id)
+  })
+}
+
 export const saveEdit = snippet => dispatch => {
-  let mutation = updateSnippetMutation
-  console.log(mutation);
-  
+  const { id, ...variables } = snippet
+
   dispatch({
     'type': 'UPDATE_SNIPPET',
-    payload: axios.patch(`https://jsonplaceholder.typicode.com/posts/${snippet.id}`, snippet)
+    payload: updateSnippetMutation(id, variables)
   })
 }
 
