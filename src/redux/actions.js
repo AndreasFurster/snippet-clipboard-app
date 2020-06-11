@@ -1,9 +1,8 @@
 import { createAction } from "@reduxjs/toolkit";
 import { push } from 'connected-react-router'
 import copy from 'copy-to-clipboard';
-import { getSnippetsForIndex, getSnippetForEdit } from "./queries/snippets";
-
-const axios = require('axios');
+import { querySnippetsForIndex, querySnippetForEdit } from "./graphql/queries";
+import { updateSnippetMutation, createSnippetMutation, deleteSnippetMutation } from "./graphql/mutations";
 
 export const SEARCH_SNIPPETS = createAction('SEARCH_SNIPPETS');
 
@@ -11,12 +10,15 @@ export const SEARCH_SNIPPETS = createAction('SEARCH_SNIPPETS');
 export const fetchSnippets = () => dispatch => {
   dispatch({
     'type': 'FETCH_SNIPPETS', 
-    payload: getSnippetsForIndex()
+    payload: querySnippetsForIndex()
   })
 }
 
 export const addSnippet = () => dispatch => {
-  dispatch(push(`/snippets/new`))
+  dispatch({
+    'type': 'ADD_SNIPPET',
+    payload: createSnippetMutation()
+  })
 }
 
 export const editSnippet = id => dispatch => {
@@ -32,14 +34,23 @@ export const copySnippet = snippet => dispatch => {
 export const fetchSnippet = id => dispatch => {
   dispatch({
     'type': 'FETCH_SNIPPET',
-    payload: getSnippetForEdit(id)
+    payload: querySnippetForEdit(id)
+  })
+}
+
+export const deleteSnippet = id => dispatch => {
+  dispatch({
+    'type': 'DELETE_SNIPPET',
+    payload: deleteSnippetMutation(id)
   })
 }
 
 export const saveEdit = snippet => dispatch => {
+  const { id, ...variables } = snippet
+
   dispatch({
     'type': 'UPDATE_SNIPPET',
-    payload: axios.patch(`https://jsonplaceholder.typicode.com/posts/${snippet.id}`, snippet)
+    payload: updateSnippetMutation(id, variables)
   })
 }
 

@@ -2,7 +2,7 @@ import React from "react"
 import { connect } from "react-redux"
 import { Stack, IconButton } from 'office-ui-fabric-react'
 import { ContextualMenuItemType } from 'office-ui-fabric-react/lib/ContextualMenu'
-import { editSnippet, copySnippet } from "../../redux/actions"
+import { editSnippet, copySnippet, deleteSnippet } from "../../redux/actions"
 import { theme } from '../../theme'
 
 const snippetStyles = {
@@ -61,7 +61,7 @@ const buildMenuProps = (dispatch, id) => ({
     {
       key: 'delete',
       text: 'Delete',
-      onClick: () => console.log('Delete'),
+      onClick: () => dispatch(deleteSnippet(id)),
       iconProps: {
         iconName: 'Delete',
       }
