@@ -5,7 +5,7 @@ import {
   Redirect
 } from "react-router-dom";
 import { connect } from "react-redux"
-import { addSnippet } from './redux/actions'
+import { addSnippet } from "./redux/actions/snippets"
 
 
 import Index from './pages/Index'

@@ -2,7 +2,7 @@ import React from "react"
 import { connect } from "react-redux"
 import { Stack, IconButton } from 'office-ui-fabric-react'
 import { ContextualMenuItemType } from 'office-ui-fabric-react/lib/ContextualMenu'
-import { editSnippet, copySnippet, deleteSnippet } from "../../redux/actions"
+import { editSnippet, copySnippet, deleteSnippet } from "../../redux/actions/snippets"
 import { theme } from '../../theme'
 
 const snippetStyles = {
@@ -46,14 +46,14 @@ const buildMenuProps = (dispatch, id) => ({
         iconName: 'Edit',
       }
     },
-    {
-      key: 'pin',
-      text: 'Pin',
-      onClick: (x) => console.log('Pin', x),
-      iconProps: {
-        iconName: 'Pin',
-      }
-    },
+    // {
+    //   key: 'pin',
+    //   text: 'Pin',
+    //   onClick: (x) => console.log('Pin', x),
+    //   iconProps: {
+    //     iconName: 'Pin',
+    //   }
+    // },
     {
       key: 'divider_1',
       itemType: ContextualMenuItemType.Divider,
@@ -125,7 +125,7 @@ class Component extends React.Component {
               onMouseUp={() => this.setActive(false)}
               onMouseEnter={() => this.setHover(true)}
               onMouseLeave={() => this.setHover(false)} >
-
+              <h4>{snippet.name}</h4>
               {snippet.preview}
             </div>
           </Stack.Item>
