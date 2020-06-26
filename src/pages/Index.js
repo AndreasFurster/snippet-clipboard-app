@@ -3,7 +3,8 @@ import { Stack, PrimaryButton, SearchBox } from 'office-ui-fabric-react';
 import { theme } from '../theme'
 import { connect } from "react-redux";
 import SnippetList from '../components/index/SnippetList'
-import { fetchSnippets, addSnippet } from "../redux/actions";
+import { fetchSnippets, addSnippet } from "../redux/actions/snippets";
+import Notifications from "../components/layout/Notifications";
 
 const stackTokens = {
   childrenGap: 10
@@ -64,6 +65,9 @@ class Component extends React.Component {
               <PrimaryButton iconProps={addIcon} text="Add" onClick={() => dispatch(addSnippet())} />
             </Stack.Item>
           </Stack>
+        </Stack.Item>
+        <Stack.Item>
+          <Notifications />
         </Stack.Item>
         <Stack.Item styles={contentStyles}>
           <SearchBox placeholder="Search" onChange={(e) => this.filterSnippets(e.currentTarget.value)} />
