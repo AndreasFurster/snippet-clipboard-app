@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Stack, MessageBar } from 'office-ui-fabric-react';
+import { Stack } from 'office-ui-fabric-react';
 import NotificationMessageBar from "./NotificationMessageBar";
 
 const stackTokens = {
